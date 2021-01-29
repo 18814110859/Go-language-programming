@@ -17,6 +17,9 @@ import (
 	"reflect"
 )
 
+/**
+一个 Bird 类型 struct
+*/
 type Bird struct {
 	Name           string
 	LifeExpectance int
@@ -32,7 +35,11 @@ func main() {
 	typeOfT := s.Type()
 	for i := 0; i < s.NumField(); i++ {
 		f := s.Field(i)
-		//
+		//输出结果
 		fmt.Printf("%d: %s %s = %v/n", i, typeOfT.Field(i).Name, f.Type(), f.Interface())
 	}
 }
+
+// 输出结果
+// 0: Name string = Sparrow
+// 1: LifeExpectance int = 3
