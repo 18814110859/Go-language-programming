@@ -113,7 +113,7 @@ func (m rssMatcher) retrieve(feed *search.Feed) (*rssDocument, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return nil, fmt.Errorf("HTTP Response Error %d\\n", resp.StatusCode)
+		return nil, fmt.Errorf("HTTP Response error %d\\n", resp.StatusCode)
 	}
 
 	var document rssDocument
