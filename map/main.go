@@ -45,30 +45,11 @@ func Reduce(arr []string, fn func(s string) int) int {
 	return sum
 }
 
-// 员工信息
-type Employee struct {
-	Name		string
-	Age			int
-	Vacation	int
-	Salary		int
-}
-
 
 
 
 
 func main() {
-	var employeeList = []Employee{
-		{"Hao", 44, 0, 8000},
-		{"Bob", 34, 10, 8000},
-		{"Alice", 34, 10, 8000},
-		{"Jack", 34, 10, 8000},
-		{"Marry", 34, 10, 8000},
-		{"Mike", 34, 10, 8000},
-	}
-
-	
-
 	var list = []string{"Hao", "Chen", "MegaEase"}
 
 	x := MapStrToStr(list, func(s string) string {
