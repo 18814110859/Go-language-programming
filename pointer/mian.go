@@ -80,8 +80,9 @@ func main() {
 	strP = &str
 	fmt.Printf("str: %s %p %p %T %T %s\n", str, &str, strP, str, strP, *strP)
 
-	// var m1 map[string]string
-	m1 := make(map[string]string)
+	var m1 map[string]string
+	m1 = make(map[string]string)
+	// m1 := make(map[string]string)
 
 	var mapP *map[string]string
 	mapP = &m1
