@@ -73,9 +73,10 @@ func main() {
 	// 主要是使用场景不同
 	// for可以 遍历array和slice 遍历key为整型递增的map 遍历string
 	// for range可以完成所有for可以做的事情，却能做到for不能做的，包括 遍历key为string类型的map并同时获取key和value 遍历channel
-	
+
+
+
 	// 循环控制Goto、Break、Continue
-	// 循环控制语句
 	// 循环控制语句可以控制循环体内语句的执行过程。
 	// GO 语言支持以下几种循环控制语句：
 	// Goto、Break、Continue
