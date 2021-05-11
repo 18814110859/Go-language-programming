@@ -1,6 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+import "sync"
+import "time"
+
+var lock sync.Mutex
 
 // Golang延迟调用：
 // defer特性：
@@ -30,21 +37,65 @@ func Close(t Test) {
 	t.Close()
 }
 
-func test2 () {
+func test2() {
 	x, y := 10, 20
 	defer func(i int) {
 		println(i, y)
-	} (x)
+	}(x)
 
 	x += 100
 	y += 100
 	println(x, y)
 }
 
+func testLock() {
+	lock.Lock()
+	lock.Unlock()
+}
+
+func testDeferLock() {
+	lock.Lock()
+	defer lock.Unlock()
+}
+
+// defer 与 closure
+func foo(a, b int) (i int, err error) {
+
+	defer fmt.Printf("first defer err %v\n", err)
+	defer func(err error) { fmt.Printf("second defer err %v\n", err) }(err)
+	defer func() { fmt.Printf("third defer err %v\n", err) }()
+
+	if b == 0 {
+		err = errors.New("divided by zero!")
+		return
+	}
+
+	i = 1 / 2
+	return i, err
+}
+
+// 在有具名返回值的函数中（这里具名返回值为 i），执行 return 2 的时候实际上已经将 i 的值重新赋值为 2。
+// 所以defer closure 输出结果为 2 而不是 1。
+func foo1() (i int) {
+	i = 1
+	defer func() {
+		fmt.Println(i)
+	}()
+	return 2
+}
+
+// defer nil 函数
+func foo2() {
+	var run func() = nil
+	defer run()
+	fmt.Println("runs")
+}
 
 func main() {
 	test2()
-	
+	foo(100, 0)
+
+	foo1()
 
 	//var whatever [5]struct{}
 	//for i := range whatever {
@@ -55,6 +106,30 @@ func main() {
 	//	defer Close(t)
 	//}
 
+	// 测试 defer 导致的性能问题
+	func() {
+		t1 := time.Now()
+		for i := 0; i < 100000; i++ {
+			testLock()
+		}
 
+		t2 := time.Since(t1)
+		fmt.Println("testLock time: ", t2)
+	}()
 
+	func() {
+		t1 := time.Now()
+		for i := 0; i < 100000; i++ {
+			testDeferLock()
+		}
+		t2 := time.Since(t1)
+		fmt.Println("testDeferLock time", t2)
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+	foo2()
 }
