@@ -3,6 +3,7 @@ package tcpServer
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"net"
 )
 
@@ -15,6 +16,9 @@ func process(conn net.Conn) {
 	for {
 		// 接收数据
 		n, err := reader.Read(buf[:])
+		if err == io.EOF {
+			break
+		}
 		if err != nil {
 			fmt.Println("read from client failed, err:", err)
 			break
@@ -37,6 +41,8 @@ func main() {
 		fmt.Println("listen failed, err:", err)
 		return
 	}
+
+	defer listener.Close()
 
 	for {
 		// Accept等待并将下一个连接返回给侦听器。
