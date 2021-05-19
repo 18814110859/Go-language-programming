@@ -1,4 +1,4 @@
-package webSocket
+package main
 
 import "encoding/json"
 
@@ -19,19 +19,29 @@ var h = hub{
 func (h *hub) run() {
 	for {
 		select {
-		case data := <-h.b:
 		case c := <-h.r:
 			h.c[c] = true
 			c.data.Ip = c.ws.RemoteAddr().String()
-			c.data.User = ""
-			c.data.Type = ""
-			c.data.Content = ""
-			c.data.UserList = []string{}
-			j, _ := json.Marshal(c.data)
-			c.sc <- j
+			// c.data.User = ""
+			// c.data.Content = ""
+			c.data.Type = "handshake"
+			//userList = append(userList, c.data.User)
+			c.data.UserList = userList
+			dataJson, _ := json.Marshal(c.data)
+			c.sc <- dataJson
 		case c := <-h.u:
 			if _, ok := h.c[c]; ok {
-
+				delete(h.c, c)
+				close(c.sc)
+			}
+		case data := <-h.b:
+			for c := range h.c {
+				select {
+				case c.sc <- data:
+				default:
+					delete(h.c, c)
+					close(c.sc)
+				}
 			}
 		}
 	}
